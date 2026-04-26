@@ -1,0 +1,23 @@
+{
+  "name": "dsroicalc",
+  "description": "Design system ROI calculator for stakeholder-ready business cases.",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace apps/desktop run tauri:dev",
+    "dev:ui": "npm --workspace apps/desktop run dev",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run typecheck",
+    "audit": "npm audit --audit-level=moderate",
+    "ci": "npm run test && npm run typecheck && npm run build && npm run audit"
+  }
+}

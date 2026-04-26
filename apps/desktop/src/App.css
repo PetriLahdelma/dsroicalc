@@ -1,0 +1,542 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-subtle: #fafaf8;
+  --surface-muted: #f1f1ee;
+  --border: #deded8;
+  --border-strong: #c7c7bf;
+  --text: #151515;
+  --muted: #666866;
+  --muted-strong: #3f403e;
+  --accent: #0f766e;
+  --accent-ink: #064e3b;
+  --danger: #b42318;
+  --focus: rgba(15, 118, 110, 0.22);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --radius: 8px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.appShell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.7rem;
+  line-height: 1.2;
+  font-weight: 680;
+}
+
+h2 {
+  font-size: 0.98rem;
+  line-height: 1.3;
+  font-weight: 680;
+}
+
+h3 {
+  font-size: 0.84rem;
+  font-weight: 680;
+  color: var(--muted-strong);
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.currencySelect {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  box-shadow: var(--shadow);
+}
+
+.currencySelect select {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-weight: 620;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border-radius: 7px;
+  font-size: 0.86rem;
+  font-weight: 620;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryButton {
+  color: #ffffff;
+  background: #111111;
+}
+
+.primaryButton:hover {
+  background: #2b2b2b;
+}
+
+.secondaryButton {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.secondaryButton:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-subtle);
+}
+
+.validationBar {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid rgba(180, 35, 24, 0.25);
+  border-radius: var(--radius);
+  color: var(--danger);
+  background: #fff7f6;
+  font-size: 0.88rem;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding-top: 16px;
+}
+
+.inputPanel,
+.resultsPanel,
+.sectionBlock,
+.chartBlock {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.inputPanel {
+  position: sticky;
+  top: 16px;
+}
+
+.panelHeader,
+.inputSection,
+.resultHero,
+.chartBlock,
+.sectionBlock {
+  padding: 16px;
+}
+
+.panelHeader {
+  border-bottom: 1px solid var(--border);
+}
+
+.panelHeader p,
+.sectionHeader p,
+.resultHero p {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.inputSection + .inputSection {
+  border-top: 1px solid var(--border);
+}
+
+.inputSection h3 {
+  margin-bottom: 12px;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fieldTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 18px;
+}
+
+.fieldLabel {
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  font-weight: 580;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fieldHelp {
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.inputShell {
+  min-height: 38px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.field.isInvalid .inputShell {
+  border-color: rgba(180, 35, 24, 0.55);
+}
+
+.inputShell input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 8px 0 8px 10px;
+  background: transparent;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.inputSuffix {
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.resultsPanel {
+  min-width: 0;
+}
+
+.resultHero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.heroValue {
+  margin: 2px 0 5px;
+  font-size: 2.75rem;
+  line-height: 1.05;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--border);
+}
+
+.metricTile {
+  min-height: 92px;
+  display: grid;
+  gap: 8px;
+  align-content: center;
+  padding: 15px 16px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.metricTile:nth-child(3n) {
+  border-right: 0;
+}
+
+.metricTile:nth-last-child(-n + 3) {
+  border-bottom: 0;
+}
+
+.metricTile span,
+.scenarioTile span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 580;
+}
+
+.metricTile strong,
+.scenarioTile strong {
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionHeader span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 620;
+  white-space: nowrap;
+}
+
+.cashChart {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+}
+
+.axisLine {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.cashPath {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cashDot {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.splitGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 0 16px 16px;
+}
+
+.scenarioGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.scenarioTile {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+}
+
+.scenarioTile div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.scenarioTile p {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.roleBars {
+  display: grid;
+  gap: 12px;
+}
+
+.roleRow {
+  display: grid;
+  gap: 8px;
+}
+
+.roleText {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.roleText strong {
+  color: var(--text);
+}
+
+.roleTrack {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+
+.roleTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+@media (max-width: 1100px) {
+  .workspace,
+  .splitGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .inputPanel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .appShell {
+    padding: 16px;
+  }
+
+  .topbar,
+  .resultHero {
+    flex-direction: column;
+  }
+
+  .topActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .fieldGrid,
+  .metricGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metricTile,
+  .metricTile:nth-child(3n),
+  .metricTile:nth-last-child(-n + 3) {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metricTile:last-child {
+    border-bottom: 0;
+  }
+
+  .heroValue {
+    font-size: 2.1rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .appShell {
+    padding: 12px;
+  }
+
+  .topActions > *,
+  .primaryButton,
+  .secondaryButton,
+  .currencySelect {
+    width: 100%;
+  }
+
+  .roleText,
+  .scenarioTile div {
+    flex-direction: column;
+  }
+}
