@@ -1,5 +1,11 @@
 # DS ROI Calc
 
+[![CI](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/ci.yml/badge.svg)](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/codeql.yml/badge.svg)](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/scorecard.yml/badge.svg)](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/scorecard.yml)
+[![Pages](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/pages.yml/badge.svg)](https://github.com/PetriLahdelma/dsroicalc/actions/workflows/pages.yml)
+[![License](https://img.shields.io/github/license/PetriLahdelma/dsroicalc)](LICENSE)
+
 Design system ROI calculator for turning design system work into a defensible
 business case.
 
@@ -27,6 +33,9 @@ data before a 1.0 release.
   static web app.
 
 ## Quick Start
+
+Try the hosted app at
+[petrilahdelma.github.io/dsroicalc](https://petrilahdelma.github.io/dsroicalc/).
 
 ```bash
 npm install
@@ -69,6 +78,8 @@ development. QA and product gains are intentionally editable estimates because
 the evidence is less standardized and varies by organization.
 
 Read the full methodology in [docs/methodology.md](docs/methodology.md).
+Use [docs/examples/enterprise-saas.md](docs/examples/enterprise-saas.md) as a
+concrete baseline case for demos and critique.
 
 ## Architecture
 
@@ -84,13 +95,16 @@ The project is split so the calculation model can outlive the first UI:
 
 - Add a social preview image in repository settings.
 - Add topics: `design-system`, `roi-calculator`, `design-ops`, `tauri`,
-  `react`, `vite`, `typescript`.
+  `react`, `vite`, `typescript`, `github-pages`.
 - Enable Dependabot alerts, secret scanning, push protection, and code scanning
   in GitHub repository settings.
 - Protect `main` with required CI checks before accepting outside
   contributions.
 - Publish a short launch post with a concrete example case and a link to the
   hosted app.
+
+See [docs/launch-plan.md](docs/launch-plan.md) for launch copy, channel
+sequencing, and momentum issues.
 
 ## License
 

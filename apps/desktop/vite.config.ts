@@ -5,10 +5,13 @@ import { fileURLToPath } from "node:url";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
+// @ts-expect-error process is a nodejs global
+const basePath = process.env.VITE_BASE_PATH ?? "/";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
+  base: basePath,
   plugins: [react()],
   resolve: {
     alias: {
