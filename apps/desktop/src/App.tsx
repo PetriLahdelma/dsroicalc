@@ -30,15 +30,17 @@ type CalculatorForm = {
 };
 
 type NumberFieldProps = {
+  fieldKey: keyof CalculatorForm;
   label: string;
   value: string;
   suffix?: string;
   min?: number;
   max?: number;
   help?: string;
-  infoOpen?: boolean;
+  guidance: Guidance;
+  activeGuidance: keyof CalculatorForm | null;
+  setActiveGuidance: (field: keyof CalculatorForm | null) => void;
   onChange: (value: string) => void;
-  onInfoClick: () => void;
 };
 
 type Guidance = {
@@ -247,17 +249,21 @@ function formatMonths(value: number | undefined) {
 }
 
 function NumberField({
+  fieldKey,
   label,
   value,
   suffix,
   min = 0,
   max,
   help,
-  infoOpen = false,
+  guidance,
+  activeGuidance,
+  setActiveGuidance,
   onChange,
-  onInfoClick,
 }: NumberFieldProps) {
   const inputId = useId();
+  const popoverId = useId();
+  const infoOpen = activeGuidance === fieldKey;
   const parsed = parseNumber(value);
   const outsideRange =
     !parsed.invalid &&
@@ -278,10 +284,11 @@ function NumberField({
           className={infoOpen ? "infoButton isActive" : "infoButton"}
           onClick={(event) => {
             event.preventDefault();
-            onInfoClick();
+            setActiveGuidance(infoOpen ? null : fieldKey);
           }}
           aria-label={`Show guidance for ${label}`}
           aria-expanded={infoOpen}
+          aria-controls={popoverId}
         >
           i
         </button>
@@ -297,6 +304,24 @@ function NumberField({
         />
         {suffix ? <span className="inputSuffix">{suffix}</span> : null}
       </span>
+      {infoOpen ? (
+        <div className="fieldPopover" id={popoverId} role="dialog" aria-label={`${label} guidance`}>
+          <div className="popoverArrow" aria-hidden="true" />
+          <div className="popoverHeader">
+            <strong>{guidance.title}</strong>
+            <button
+              type="button"
+              className="popoverClose"
+              onClick={() => setActiveGuidance(null)}
+              aria-label={`Close ${label} guidance`}
+            >
+              ×
+            </button>
+          </div>
+          <p>{guidance.body}</p>
+          <small>{guidance.example}</small>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -453,7 +478,7 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [guideOpen, setGuideOpen] = useState(true);
   const [activeGuidance, setActiveGuidance] =
-    useState<keyof CalculatorForm>("adoptionPct");
+    useState<keyof CalculatorForm | null>(null);
 
   function updateField(key: keyof CalculatorForm, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -612,57 +637,58 @@ function App() {
             ) : null}
           </div>
 
-          <div className="guidancePanel" aria-live="polite">
-            <div>
-              <span className="guidanceKicker">Input guidance</span>
-              <h3>{FIELD_GUIDANCE[activeGuidance].title}</h3>
-            </div>
-            <p>{FIELD_GUIDANCE[activeGuidance].body}</p>
-            <small>{FIELD_GUIDANCE[activeGuidance].example}</small>
-          </div>
-
           <div className="inputSection">
             <h3>Team</h3>
             <div className="fieldGrid">
               <NumberField
+                fieldKey="designersFte"
                 label="Designers"
                 value={form.designersFte}
                 suffix="FTE"
-                infoOpen={activeGuidance === "designersFte"}
+                guidance={FIELD_GUIDANCE.designersFte}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("designersFte", value)}
-                onInfoClick={() => setActiveGuidance("designersFte")}
               />
               <NumberField
+                fieldKey="developersFte"
                 label="Developers"
                 value={form.developersFte}
                 suffix="FTE"
-                infoOpen={activeGuidance === "developersFte"}
+                guidance={FIELD_GUIDANCE.developersFte}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("developersFte", value)}
-                onInfoClick={() => setActiveGuidance("developersFte")}
               />
               <NumberField
+                fieldKey="qaFte"
                 label="QA"
                 value={form.qaFte}
                 suffix="FTE"
-                infoOpen={activeGuidance === "qaFte"}
+                guidance={FIELD_GUIDANCE.qaFte}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("qaFte", value)}
-                onInfoClick={() => setActiveGuidance("qaFte")}
               />
               <NumberField
+                fieldKey="productFte"
                 label="Product"
                 value={form.productFte}
                 suffix="FTE"
-                infoOpen={activeGuidance === "productFte"}
+                guidance={FIELD_GUIDANCE.productFte}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("productFte", value)}
-                onInfoClick={() => setActiveGuidance("productFte")}
               />
               <NumberField
+                fieldKey="blendedHourlyRate"
                 label="Blended hourly rate"
                 value={form.blendedHourlyRate}
                 suffix="/hr"
-                infoOpen={activeGuidance === "blendedHourlyRate"}
+                guidance={FIELD_GUIDANCE.blendedHourlyRate}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("blendedHourlyRate", value)}
-                onInfoClick={() => setActiveGuidance("blendedHourlyRate")}
               />
             </div>
           </div>
@@ -671,61 +697,73 @@ function App() {
             <h3>Efficiency assumptions</h3>
             <div className="fieldGrid">
               <NumberField
+                fieldKey="designGainPct"
                 label="Design gain"
                 value={form.designGainPct}
                 suffix="%"
                 max={100}
                 help="benchmark"
-                infoOpen={activeGuidance === "designGainPct"}
+                guidance={FIELD_GUIDANCE.designGainPct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("designGainPct", value)}
-                onInfoClick={() => setActiveGuidance("designGainPct")}
               />
               <NumberField
+                fieldKey="devGainPct"
                 label="Development gain"
                 value={form.devGainPct}
                 suffix="%"
                 max={100}
                 help="benchmark"
-                infoOpen={activeGuidance === "devGainPct"}
+                guidance={FIELD_GUIDANCE.devGainPct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("devGainPct", value)}
-                onInfoClick={() => setActiveGuidance("devGainPct")}
               />
               <NumberField
+                fieldKey="qaGainPct"
                 label="QA gain"
                 value={form.qaGainPct}
                 suffix="%"
                 max={100}
                 help="estimate"
-                infoOpen={activeGuidance === "qaGainPct"}
+                guidance={FIELD_GUIDANCE.qaGainPct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("qaGainPct", value)}
-                onInfoClick={() => setActiveGuidance("qaGainPct")}
               />
               <NumberField
+                fieldKey="productGainPct"
                 label="Product gain"
                 value={form.productGainPct}
                 suffix="%"
                 max={100}
                 help="estimate"
-                infoOpen={activeGuidance === "productGainPct"}
+                guidance={FIELD_GUIDANCE.productGainPct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("productGainPct", value)}
-                onInfoClick={() => setActiveGuidance("productGainPct")}
               />
               <NumberField
+                fieldKey="adoptionPct"
                 label="Adoption"
                 value={form.adoptionPct}
                 suffix="%"
                 max={100}
-                infoOpen={activeGuidance === "adoptionPct"}
+                guidance={FIELD_GUIDANCE.adoptionPct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("adoptionPct", value)}
-                onInfoClick={() => setActiveGuidance("adoptionPct")}
               />
               <NumberField
+                fieldKey="rampUpMonths"
                 label="Ramp-up"
                 value={form.rampUpMonths}
                 suffix="mo"
-                infoOpen={activeGuidance === "rampUpMonths"}
+                guidance={FIELD_GUIDANCE.rampUpMonths}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("rampUpMonths", value)}
-                onInfoClick={() => setActiveGuidance("rampUpMonths")}
               />
             </div>
           </div>
@@ -734,54 +772,66 @@ function App() {
             <h3>Investment</h3>
             <div className="fieldGrid">
               <NumberField
+                fieldKey="oneTimeCost"
                 label="One-time launch"
                 value={form.oneTimeCost}
                 suffix={currency}
-                infoOpen={activeGuidance === "oneTimeCost"}
+                guidance={FIELD_GUIDANCE.oneTimeCost}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("oneTimeCost", value)}
-                onInfoClick={() => setActiveGuidance("oneTimeCost")}
               />
               <NumberField
+                fieldKey="annualProgramCost"
                 label="Annual tools/services"
                 value={form.annualProgramCost}
                 suffix={currency}
-                infoOpen={activeGuidance === "annualProgramCost"}
+                guidance={FIELD_GUIDANCE.annualProgramCost}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("annualProgramCost", value)}
-                onInfoClick={() => setActiveGuidance("annualProgramCost")}
               />
               <NumberField
+                fieldKey="designSystemFte"
                 label="Dedicated DS team"
                 value={form.designSystemFte}
                 suffix="FTE"
-                infoOpen={activeGuidance === "designSystemFte"}
+                guidance={FIELD_GUIDANCE.designSystemFte}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("designSystemFte", value)}
-                onInfoClick={() => setActiveGuidance("designSystemFte")}
               />
               <NumberField
+                fieldKey="maintenanceHoursPerMonth"
                 label="Maintenance"
                 value={form.maintenanceHoursPerMonth}
                 suffix="h/mo"
-                infoOpen={activeGuidance === "maintenanceHoursPerMonth"}
+                guidance={FIELD_GUIDANCE.maintenanceHoursPerMonth}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("maintenanceHoursPerMonth", value)}
-                onInfoClick={() => setActiveGuidance("maintenanceHoursPerMonth")}
               />
               <NumberField
+                fieldKey="analysisYears"
                 label="Analysis window"
                 value={form.analysisYears}
                 suffix="yr"
                 min={1}
-                infoOpen={activeGuidance === "analysisYears"}
+                guidance={FIELD_GUIDANCE.analysisYears}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("analysisYears", value)}
-                onInfoClick={() => setActiveGuidance("analysisYears")}
               />
               <NumberField
+                fieldKey="discountRatePct"
                 label="Discount rate"
                 value={form.discountRatePct}
                 suffix="%"
                 max={100}
-                infoOpen={activeGuidance === "discountRatePct"}
+                guidance={FIELD_GUIDANCE.discountRatePct}
+                activeGuidance={activeGuidance}
+                setActiveGuidance={setActiveGuidance}
                 onChange={(value) => updateField("discountRatePct", value)}
-                onInfoClick={() => setActiveGuidance("discountRatePct")}
               />
             </div>
           </div>
