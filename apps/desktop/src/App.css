@@ -214,6 +214,73 @@ h3 {
   border-bottom: 1px solid var(--border);
 }
 
+.guideCard,
+.guidancePanel {
+  margin: 12px 16px 0;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+}
+
+.guideHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guideHeader p,
+.guidancePanel p {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.textButton {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.textButton:hover {
+  color: var(--accent-ink);
+}
+
+.guideSteps {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+}
+
+.guidancePanel {
+  display: grid;
+  gap: 8px;
+  border-color: rgba(15, 118, 110, 0.24);
+  background: #fbfefd;
+}
+
+.guidancePanel small {
+  display: block;
+  color: var(--muted-strong);
+  font-size: 0.79rem;
+}
+
+.guidanceKicker {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--accent-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .panelHeader p,
 .sectionHeader p,
 .resultHero p {
@@ -249,6 +316,13 @@ h3 {
   min-height: 18px;
 }
 
+.fieldLabelGroup {
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
 .fieldLabel {
   color: var(--muted-strong);
   font-size: 0.82rem;
@@ -256,6 +330,30 @@ h3 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.infoButton {
+  width: 19px;
+  height: 19px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.infoButton:hover,
+.infoButton.isActive {
+  border-color: rgba(15, 118, 110, 0.45);
+  color: var(--accent-ink);
+  background: #f0fdfa;
 }
 
 .fieldHelp {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
   calculateRoiCase,
   DEFAULT_ROLE_BENCHMARKS,
@@ -36,7 +36,15 @@ type NumberFieldProps = {
   min?: number;
   max?: number;
   help?: string;
+  infoOpen?: boolean;
   onChange: (value: string) => void;
+  onInfoClick: () => void;
+};
+
+type Guidance = {
+  title: string;
+  body: string;
+  example: string;
 };
 
 const DEFAULT_FORM: CalculatorForm = {
@@ -108,6 +116,94 @@ const PERCENT_FIELDS = new Set<keyof CalculatorForm>([
   "discountRatePct",
 ]);
 
+const FIELD_GUIDANCE: Record<keyof CalculatorForm, Guidance> = {
+  designersFte: {
+    title: "Designers",
+    body: "Count product, UX, UI, and visual designers whose work could become faster through reusable components, tokens, patterns, and shared decisions.",
+    example: "Use average capacity. If 10 designers spend half their time on affected product work, enter 5.",
+  },
+  developersFte: {
+    title: "Developers",
+    body: "Count frontend, full-stack, and mobile developers who build or maintain UI that the design system can standardize.",
+    example: "Include teams that regularly ship product UI, not backend-only teams.",
+  },
+  qaFte: {
+    title: "QA",
+    body: "Count people who validate UI, accessibility, visual regressions, and product quality. Design systems often reduce repeated checks and defect churn.",
+    example: "Use 0 if QA is not part of the business case yet.",
+  },
+  productFte: {
+    title: "Product",
+    body: "Count PMs, analysts, or design leads who spend time resolving UI decisions, writing repeated requirements, or coordinating duplicated work.",
+    example: "Keep this conservative unless you have evidence from planning or delivery rituals.",
+  },
+  blendedHourlyRate: {
+    title: "Blended hourly rate",
+    body: "Use the loaded hourly cost for the people in the model: salary, benefits, taxes, vendor markup, and overhead.",
+    example: "For a stakeholder deck, use a finance-approved blended rate rather than individual salaries.",
+  },
+  designGainPct: {
+    title: "Design gain",
+    body: "Estimated percent of design capacity saved through reusable decisions, patterns, components, and fewer repeated artifacts.",
+    example: "The default follows the cited 38% design average. Lower it if adoption is immature.",
+  },
+  devGainPct: {
+    title: "Development gain",
+    body: "Estimated percent of engineering UI capacity saved by reusing production components and documented implementation guidance.",
+    example: "The default follows the cited 31% development average. Use a lower value for weak component coverage.",
+  },
+  qaGainPct: {
+    title: "QA gain",
+    body: "Estimated percent of QA capacity saved through standardized components, known accessibility behavior, and fewer UI regressions.",
+    example: "Keep this modest unless you can compare defects or regression cycles before and after adoption.",
+  },
+  productGainPct: {
+    title: "Product gain",
+    body: "Estimated percent of product capacity saved from fewer repeated UI decisions, less alignment churn, and clearer delivery scope.",
+    example: "Use this for stakeholder alignment cost, not general PM productivity.",
+  },
+  adoptionPct: {
+    title: "Adoption",
+    body: "Percent of the modeled work that actually uses the design system. This is usually the most important realism control.",
+    example: "If only three quarters of affected product work uses the system, enter 75.",
+  },
+  rampUpMonths: {
+    title: "Ramp-up",
+    body: "Months before the organization reaches full run-rate benefit. The model counts this period at half benefit.",
+    example: "Use 3-6 months for a focused rollout, 9-12 months for broad enterprise adoption.",
+  },
+  analysisYears: {
+    title: "Analysis window",
+    body: "Number of years used for cash-flow and NPV. Short windows are stricter; longer windows show durable platform value.",
+    example: "Three years is a practical default for design system investment cases.",
+  },
+  discountRatePct: {
+    title: "Discount rate",
+    body: "Annual rate used to discount future net cash flow into present value. Finance teams often provide this.",
+    example: "If you do not have a company rate, 8-10% is a common sensitivity range.",
+  },
+  oneTimeCost: {
+    title: "One-time launch",
+    body: "Initial investment required to create, migrate, audit, or relaunch the system.",
+    example: "Include discovery, initial component build, migration spikes, audits, and enablement events.",
+  },
+  annualProgramCost: {
+    title: "Annual tools/services",
+    body: "Recurring non-staff program cost such as tooling, research, vendor support, training, documentation, or audits.",
+    example: "Do not include dedicated team payroll here; use the dedicated DS team field for that.",
+  },
+  designSystemFte: {
+    title: "Dedicated DS team",
+    body: "Full-time equivalent capacity allocated to building, governing, and supporting the design system.",
+    example: "A team with two people half-time is 1.0 FTE.",
+  },
+  maintenanceHoursPerMonth: {
+    title: "Maintenance",
+    body: "Monthly effort for upkeep that is not captured in dedicated FTE: support, dependency updates, audits, documentation, and triage.",
+    example: "Use this for distributed maintenance or agency support retained after launch.",
+  },
+};
+
 function parseNumber(value: string) {
   const normalized = value.replace(/,/g, "").trim();
   if (normalized === "") return { value: 0, invalid: false };
@@ -157,8 +253,11 @@ function NumberField({
   min = 0,
   max,
   help,
+  infoOpen = false,
   onChange,
+  onInfoClick,
 }: NumberFieldProps) {
+  const inputId = useId();
   const parsed = parseNumber(value);
   const outsideRange =
     !parsed.invalid &&
@@ -166,13 +265,30 @@ function NumberField({
   const invalid = parsed.invalid || outsideRange;
 
   return (
-    <label className={invalid ? "field isInvalid" : "field"}>
+    <div className={invalid ? "field isInvalid" : "field"}>
       <span className="fieldTop">
-        <span className="fieldLabel">{label}</span>
-        {help ? <span className="fieldHelp">{help}</span> : null}
+        <span className="fieldLabelGroup">
+          <label className="fieldLabel" htmlFor={inputId}>
+            {label}
+          </label>
+          {help ? <span className="fieldHelp">{help}</span> : null}
+        </span>
+        <button
+          type="button"
+          className={infoOpen ? "infoButton isActive" : "infoButton"}
+          onClick={(event) => {
+            event.preventDefault();
+            onInfoClick();
+          }}
+          aria-label={`Show guidance for ${label}`}
+          aria-expanded={infoOpen}
+        >
+          i
+        </button>
       </span>
       <span className="inputShell">
         <input
+          id={inputId}
           value={value}
           inputMode="decimal"
           onChange={(event) => onChange(event.currentTarget.value)}
@@ -181,7 +297,7 @@ function NumberField({
         />
         {suffix ? <span className="inputSuffix">{suffix}</span> : null}
       </span>
-    </label>
+    </div>
   );
 }
 
@@ -335,6 +451,9 @@ function App() {
   const [form, setForm] = useState<CalculatorForm>(DEFAULT_FORM);
   const [currency, setCurrency] = useState<Currency>("USD");
   const [copied, setCopied] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(true);
+  const [activeGuidance, setActiveGuidance] =
+    useState<keyof CalculatorForm>("adoptionPct");
 
   function updateField(key: keyof CalculatorForm, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -468,6 +587,40 @@ function App() {
             <p>Capacity, assumptions, and investment.</p>
           </div>
 
+          <div className="guideCard">
+            <div className="guideHeader">
+              <div>
+                <h3>Guide</h3>
+                <p>Build the case from left to right, then validate the result.</p>
+              </div>
+              <button
+                type="button"
+                className="textButton"
+                onClick={() => setGuideOpen((open) => !open)}
+                aria-expanded={guideOpen}
+              >
+                {guideOpen ? "Hide" : "Show"}
+              </button>
+            </div>
+            {guideOpen ? (
+              <ol className="guideSteps">
+                <li>Start with affected team capacity, not total company headcount.</li>
+                <li>Keep efficiency gains conservative unless you have delivery data.</li>
+                <li>Use adoption and ramp-up to make the forecast believable.</li>
+                <li>Review scenario and payback before sharing the memo.</li>
+              </ol>
+            ) : null}
+          </div>
+
+          <div className="guidancePanel" aria-live="polite">
+            <div>
+              <span className="guidanceKicker">Input guidance</span>
+              <h3>{FIELD_GUIDANCE[activeGuidance].title}</h3>
+            </div>
+            <p>{FIELD_GUIDANCE[activeGuidance].body}</p>
+            <small>{FIELD_GUIDANCE[activeGuidance].example}</small>
+          </div>
+
           <div className="inputSection">
             <h3>Team</h3>
             <div className="fieldGrid">
@@ -475,31 +628,41 @@ function App() {
                 label="Designers"
                 value={form.designersFte}
                 suffix="FTE"
+                infoOpen={activeGuidance === "designersFte"}
                 onChange={(value) => updateField("designersFte", value)}
+                onInfoClick={() => setActiveGuidance("designersFte")}
               />
               <NumberField
                 label="Developers"
                 value={form.developersFte}
                 suffix="FTE"
+                infoOpen={activeGuidance === "developersFte"}
                 onChange={(value) => updateField("developersFte", value)}
+                onInfoClick={() => setActiveGuidance("developersFte")}
               />
               <NumberField
                 label="QA"
                 value={form.qaFte}
                 suffix="FTE"
+                infoOpen={activeGuidance === "qaFte"}
                 onChange={(value) => updateField("qaFte", value)}
+                onInfoClick={() => setActiveGuidance("qaFte")}
               />
               <NumberField
                 label="Product"
                 value={form.productFte}
                 suffix="FTE"
+                infoOpen={activeGuidance === "productFte"}
                 onChange={(value) => updateField("productFte", value)}
+                onInfoClick={() => setActiveGuidance("productFte")}
               />
               <NumberField
                 label="Blended hourly rate"
                 value={form.blendedHourlyRate}
                 suffix="/hr"
+                infoOpen={activeGuidance === "blendedHourlyRate"}
                 onChange={(value) => updateField("blendedHourlyRate", value)}
+                onInfoClick={() => setActiveGuidance("blendedHourlyRate")}
               />
             </div>
           </div>
@@ -513,7 +676,9 @@ function App() {
                 suffix="%"
                 max={100}
                 help="benchmark"
+                infoOpen={activeGuidance === "designGainPct"}
                 onChange={(value) => updateField("designGainPct", value)}
+                onInfoClick={() => setActiveGuidance("designGainPct")}
               />
               <NumberField
                 label="Development gain"
@@ -521,7 +686,9 @@ function App() {
                 suffix="%"
                 max={100}
                 help="benchmark"
+                infoOpen={activeGuidance === "devGainPct"}
                 onChange={(value) => updateField("devGainPct", value)}
+                onInfoClick={() => setActiveGuidance("devGainPct")}
               />
               <NumberField
                 label="QA gain"
@@ -529,7 +696,9 @@ function App() {
                 suffix="%"
                 max={100}
                 help="estimate"
+                infoOpen={activeGuidance === "qaGainPct"}
                 onChange={(value) => updateField("qaGainPct", value)}
+                onInfoClick={() => setActiveGuidance("qaGainPct")}
               />
               <NumberField
                 label="Product gain"
@@ -537,20 +706,26 @@ function App() {
                 suffix="%"
                 max={100}
                 help="estimate"
+                infoOpen={activeGuidance === "productGainPct"}
                 onChange={(value) => updateField("productGainPct", value)}
+                onInfoClick={() => setActiveGuidance("productGainPct")}
               />
               <NumberField
                 label="Adoption"
                 value={form.adoptionPct}
                 suffix="%"
                 max={100}
+                infoOpen={activeGuidance === "adoptionPct"}
                 onChange={(value) => updateField("adoptionPct", value)}
+                onInfoClick={() => setActiveGuidance("adoptionPct")}
               />
               <NumberField
                 label="Ramp-up"
                 value={form.rampUpMonths}
                 suffix="mo"
+                infoOpen={activeGuidance === "rampUpMonths"}
                 onChange={(value) => updateField("rampUpMonths", value)}
+                onInfoClick={() => setActiveGuidance("rampUpMonths")}
               />
             </div>
           </div>
@@ -562,39 +737,51 @@ function App() {
                 label="One-time launch"
                 value={form.oneTimeCost}
                 suffix={currency}
+                infoOpen={activeGuidance === "oneTimeCost"}
                 onChange={(value) => updateField("oneTimeCost", value)}
+                onInfoClick={() => setActiveGuidance("oneTimeCost")}
               />
               <NumberField
                 label="Annual tools/services"
                 value={form.annualProgramCost}
                 suffix={currency}
+                infoOpen={activeGuidance === "annualProgramCost"}
                 onChange={(value) => updateField("annualProgramCost", value)}
+                onInfoClick={() => setActiveGuidance("annualProgramCost")}
               />
               <NumberField
                 label="Dedicated DS team"
                 value={form.designSystemFte}
                 suffix="FTE"
+                infoOpen={activeGuidance === "designSystemFte"}
                 onChange={(value) => updateField("designSystemFte", value)}
+                onInfoClick={() => setActiveGuidance("designSystemFte")}
               />
               <NumberField
                 label="Maintenance"
                 value={form.maintenanceHoursPerMonth}
                 suffix="h/mo"
+                infoOpen={activeGuidance === "maintenanceHoursPerMonth"}
                 onChange={(value) => updateField("maintenanceHoursPerMonth", value)}
+                onInfoClick={() => setActiveGuidance("maintenanceHoursPerMonth")}
               />
               <NumberField
                 label="Analysis window"
                 value={form.analysisYears}
                 suffix="yr"
                 min={1}
+                infoOpen={activeGuidance === "analysisYears"}
                 onChange={(value) => updateField("analysisYears", value)}
+                onInfoClick={() => setActiveGuidance("analysisYears")}
               />
               <NumberField
                 label="Discount rate"
                 value={form.discountRatePct}
                 suffix="%"
                 max={100}
+                infoOpen={activeGuidance === "discountRatePct"}
                 onChange={(value) => updateField("discountRatePct", value)}
+                onInfoClick={() => setActiveGuidance("discountRatePct")}
               />
             </div>
           </div>
