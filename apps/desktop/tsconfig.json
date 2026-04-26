@@ -5,7 +5,6 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "baseUrl": ".",
     "paths": {
       "@petrilahdelma/dsroicalc-roi-core": [
         "../../packages/roi-core/src/index.ts"
