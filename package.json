@@ -19,5 +19,12 @@
     "lint": "npm run typecheck",
     "audit": "npm audit --audit-level=moderate",
     "ci": "npm run test && npm run typecheck && npm run build && npm run audit"
+  },
+  "overrides": {
+    "@vitejs/plugin-react": "5.2.0",
+    "vite": "7.3.2"
+  },
+  "devDependencies": {
+    "vite": "7.3.2"
   }
 }

@@ -9,6 +9,13 @@ updates:
         dependency-type: development
       npm-production:
         dependency-type: production
+    ignore:
+      - dependency-name: vite
+        versions:
+          - 8.x
+      - dependency-name: "@vitejs/plugin-react"
+        versions:
+          - 6.x
 
   - package-ecosystem: cargo
     directory: /apps/desktop/src-tauri
