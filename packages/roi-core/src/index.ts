@@ -135,6 +135,8 @@ export type RoiCaseResult = {
     yearOneInvestmentCost: number;
     yearOneNetValue: number;
     yearOneRoiPercent?: number;
+    breakEvenBenefitMultiplier?: number;
+    yearOneBenefitSafetyMarginPercent?: number;
     paybackMonths?: number;
     npv: number;
     benefitCostRatio?: number;
@@ -371,6 +373,22 @@ function benefitCostRatio(monthlyCashFlows: RoiMonthCashFlow[]) {
   return cost > 0 ? benefit / cost : undefined;
 }
 
+function breakEvenBenefitMultiplier(yearOne: RoiYearCashFlow | undefined) {
+  if (!yearOne || yearOne.grossBenefit <= 0) {
+    return undefined;
+  }
+
+  return yearOne.investmentCost / yearOne.grossBenefit;
+}
+
+function benefitSafetyMarginPercent(yearOne: RoiYearCashFlow | undefined) {
+  if (!yearOne || yearOne.grossBenefit <= 0) {
+    return undefined;
+  }
+
+  return ((yearOne.grossBenefit - yearOne.investmentCost) / yearOne.grossBenefit) * 100;
+}
+
 function scenarioResult(
   scenario: RoiScenarioInput,
   params: {
@@ -468,6 +486,8 @@ export function calculateRoiCase(inputs: RoiCaseInputs): RoiCaseResult {
         yearOne && yearOne.investmentCost > 0
           ? ((yearOne.grossBenefit - yearOne.investmentCost) / yearOne.investmentCost) * 100
           : undefined,
+      breakEvenBenefitMultiplier: breakEvenBenefitMultiplier(yearOne),
+      yearOneBenefitSafetyMarginPercent: benefitSafetyMarginPercent(yearOne),
       paybackMonths: paybackMonths(monthlyCashFlows),
       npv: monthlyCashFlows.reduce((sum, month) => sum + month.discountedNetCashFlow, 0),
       benefitCostRatio: totalInvestmentCost > 0 ? benefitCostRatio(monthlyCashFlows) : undefined,

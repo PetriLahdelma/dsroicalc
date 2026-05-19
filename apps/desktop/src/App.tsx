@@ -336,6 +336,7 @@ function makeMemo(result: RoiCaseResult, currency: Currency) {
     `- Annual gross efficiency value: ${formatMoney(result.summary.annualGrossValue, currency)}`,
     `- Annual net value after program cost: ${formatMoney(result.summary.annualNetValue, currency)}`,
     `- Year-one ROI: ${formatPercent(result.summary.yearOneRoiPercent)}`,
+    `- Year-one benefit safety margin: ${formatPercent(result.summary.yearOneBenefitSafetyMarginPercent)}`,
     `- Payback: ${formatMonths(result.summary.paybackMonths)}`,
     `- ${result.summary.analysisYears}-year NPV: ${formatMoney(result.summary.npv, currency)}`,
     `- Annual hours saved: ${formatNumber(result.summary.annualHoursSaved, 0)} hours`,
@@ -880,6 +881,18 @@ function App() {
                   ? "n/a"
                   : `${formatNumber(expected.benefitCostRatio, 1)}x`}
               </strong>
+            </div>
+            <div className="metricTile">
+              <span>Break-even benefit</span>
+              <strong>
+                {result.summary.breakEvenBenefitMultiplier == null
+                  ? "n/a"
+                  : formatPercent(result.summary.breakEvenBenefitMultiplier * 100)}
+              </strong>
+            </div>
+            <div className="metricTile">
+              <span>Benefit safety margin</span>
+              <strong>{formatPercent(result.summary.yearOneBenefitSafetyMarginPercent)}</strong>
             </div>
           </div>
 
