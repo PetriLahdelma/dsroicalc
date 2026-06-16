@@ -56,6 +56,8 @@ describe("calculateRoiCase", () => {
     expect(r.summary.yearOneGrossBenefit).toBeCloseTo(1226160, 6);
     expect(r.summary.yearOneInvestmentCost).toBeCloseTo(400000, 6);
     expect(r.summary.yearOneRoiPercent).toBeCloseTo(206.54, 2);
+    expect(r.summary.breakEvenBenefitMultiplier).toBeCloseTo(0.326, 3);
+    expect(r.summary.yearOneBenefitSafetyMarginPercent).toBeCloseTo(67.38, 2);
     expect(r.summary.paybackMonths).toBeCloseTo(2.32, 2);
     expect(r.summary.npv).toBeGreaterThan(2500000);
     expect(r.summary.benefitCostRatio).toBeGreaterThan(3);
