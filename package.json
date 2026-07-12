@@ -22,9 +22,9 @@
   },
   "overrides": {
     "@vitejs/plugin-react": "5.2.0",
-    "vite": "7.3.2"
+    "vite": "7.3.6"
   },
   "devDependencies": {
-    "vite": "7.3.2"
+    "vite": "7.3.6"
   }
 }
